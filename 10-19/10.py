@@ -1,7 +1,3 @@
-count = 0
-with open('popular-names.txt') as f:
+import pandas as pd
 
-    for line in f:
-	    count += 1
-
-print(count)
+print(len(pd.read_table('popular-names.txt', header=None)))
