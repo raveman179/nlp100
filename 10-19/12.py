@@ -1,16 +1,9 @@
-before = 'popular-names.txt'
-col1 = 'col1.txt'
-col2 = 'col2.txt'
+import pandas as pd
 
-col1 = open(col1, mode='w')
-col2 = open(col2, mode='w')
+before = './10-19/popular-names.txt'
+col1, col2 = './10-19/col1.txt', './10-19/col2.txt'
 
-with open(before) as f:
-    for i in f:
-        i = i.split(' ')
-        col1.write(i[0]+'\n')
-        col2.write(i[1]+'\n')
+df = pd.read_csv('./10-19/popular-names.txt', delimiter='\t', header=None)
 
-col1.close()
-col2.close()
-	        
+df.iloc[:, 0:1].to_csv(col1, header=False, index=False)
+df.iloc[:, 1:2].to_csv(col2, header=False, index=False)

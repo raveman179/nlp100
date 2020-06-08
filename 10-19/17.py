@@ -1,8 +1,7 @@
 import pandas as pd
 
-rows = int(input())
 marge = './10-19/popular-names.txt'
+drop_dup= './10-19/drop_dup.txt'
 
 df = pd.read_csv(marge, header=None, delimiter='\t')
-
-print(df.head(rows))
+df.drop_duplicates(0).to_csv(drop_dup, header=False, index=False, sep='\t')

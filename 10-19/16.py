@@ -1,12 +1,17 @@
-numofsplit = int(input())
-marge = 'c1c2marge.txt'
-output = ['output{}.txt'.format(i+1) for i in range(numofsplit)]
+import pandas as pd
+import math
 
-with open(marge, mode='r') as marge:
-    split_list = marge.split('\n')
+split = int(input())
+marge_ = './10-19/popular-names.txt'
+output = ['output{}.txt'.format(i+1) for i in range(split)]
 
-splittimes = len(split_list) / numofsplit
+marge = pd.read_csv(marge_, header=None, delimiter='\t')
+row = math.ceil(len(marge) / split)
 
-for i in lange(len(output)):
-    with open(output[i+1], mode='w') as output[i+1]:
-        
+filenum = 0 
+txt_slice = [0, row]
+
+while split > filenum:
+    marge[txt_slice[0]:txt_slice[1]].to_csv(output[filenum], header=False, index=False)
+    txt_slice = list(map(lambda x: x + row, txt_slice))
+    filenum += 1

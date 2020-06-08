@@ -1,8 +1,7 @@
 import pandas as pd
 
-rows = int(input())
 marge = './10-19/popular-names.txt'
 
 df = pd.read_csv(marge, header=None, delimiter='\t')
-
-print(df.head(rows))
+df_s = df.sort_values(2, ascending=False)
+print(df_s)

@@ -1,12 +1,8 @@
-times = int(input())
-marge = 'c1c2marge.txt'
+import pandas as pd
 
-with open(marge, mode='r') as marge:
-    line = marge.read()
-    pline = line.split('\n')
-for i in range(times):
-    print(pline[-times])
-    if times ==0:
-        break
-    else:
-        times -= 1
+rows = int(input())
+marge = './10-19/popular-names.txt'
+
+df = pd.read_csv(marge, header=None, delimiter='\t')
+
+print(df.tail(rows))

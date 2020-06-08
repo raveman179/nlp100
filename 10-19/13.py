@@ -1,15 +1,10 @@
-col1, col2 = 'col1.txt', 'col2.txt'
-collist =[]
-marge = 'c1c2marge.txt'
+import pandas as pd
 
-with open(col1, mode='r') as col1:
-    c1 = [i.strip() for i in col1.readlines()]
+col1, col2 = './10-19/col1.txt', './10-19/col2.txt'
+marge = './10-19/c1c2marge.txt'
 
-with open(col2, mode='r') as col2:
-    c2 = [j.strip() for j in col2.readlines()]
+c1 = pd.read_csv(col1, header=None)
+c2 = pd.read_csv(col2, header=None)
+c1c2 = pd.concat([c1, c2], axis=1)
 
-with open(marge, mode='w') as marge:
-    for (i, j) in zip(c1, c2):
-        collist += [i+'\t', j+'\n']
-    marge.write(''.join(collist))
-    
+c1c2.to_csv(marge, header=False, index=False, sep='\t')
