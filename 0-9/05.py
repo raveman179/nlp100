@@ -1,7 +1,6 @@
 # coding: utf-8
 
 sentence = "i am an NLPer"
-# sen_list = [i,am,an,NLPer]
 sen_list = sentence.split(" ")
 
 def genNgram(sentence, N):

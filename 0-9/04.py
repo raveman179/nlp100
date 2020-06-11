@@ -3,8 +3,8 @@ import re
 
 string = 'Hi He Lied Because Boron Could Not Oxidize Fluorine. New Nations Might Also Sign Peace Security Clause. Arthur King Can.' 
 
-restring = re.sub(r'[,\.]', '', string)
-str_list = restring.split()
+drop_cp = re.sub(r'[,\.]', '', string)
+str_list = drop_cp.split()
 
 getfirstword = [1, 5, 6, 7, 8, 9, 15, 16, 19]
 r_dict = {}
