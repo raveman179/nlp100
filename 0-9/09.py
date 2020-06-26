@@ -3,8 +3,8 @@ import random
 
 sentence = "I couldn't believe that I could actually understand what I was reading : the phenomenal power of the human mind."
 
-def wordrandom(sen):
-    senlist=sen.split()
+def wordrandom(sentence):
+    senlist=sentence.split()
     for i in range(len(senlist)):
         word = senlist[i]
         if len(word) > 4:

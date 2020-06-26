@@ -12,6 +12,7 @@ filenum = 0
 txt_slice = [0, row]
 
 while split > filenum:
-    marge[txt_slice[0]:txt_slice[1]].to_csv(output[filenum], header=False, index=False)
+    marge[txt_slice[0]:txt_slice[1]].to_csv(output[filenum], 
+    header=False, index=False)
     txt_slice = list(map(lambda x: x + row, txt_slice))
     filenum += 1
