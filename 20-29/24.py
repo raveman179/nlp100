@@ -1,11 +1,23 @@
+'''
+24. ファイル参照の抽出
+記事から参照されているメディアファイルをすべて抜き出せ．
+'''
+
 import pandas as pd
 import re
+from pprint import pprint
 
-pd.set_option("display.max_colwidth", 200)
-df = pd.read_csv('./20-29/eng_json.txt', delimiter='\n', header=None)
+def wiki_json_extract(keyword):
+    '''
+    extract keyword from wikipedia json format
+    '''
+    df = pd.read_json('./20-29/jawiki-country.json.gz', lines=True)
+    extract_keyword = df[df.title == keyword]['text'].values[0]
+    return extract_keyword
 
-for index, row in df[0].iteritems():
-    filename = re.findall(r'\[\[ファイル:([^|\]]*)', str(row))
-    if filename != []:
-        for x in filename:
-            print(x)
+article = wiki_json_extract('イギリス')
+# pprint(article)
+
+filename = re.findall(r'''(?:ファイル):(.*?)\|''', article, re.MULTILINE)
+
+pprint(filename)
