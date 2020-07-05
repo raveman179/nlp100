@@ -9,6 +9,7 @@ verify_ssl = true
 pandas = "*"
 numpy = "*"
 requests = "*"
+mecab-python3 = "*"
 
 [requires]
 python_version = "3.6"
