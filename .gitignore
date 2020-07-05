@@ -1,5 +1,5 @@
 .gitignore
-Pipfile
-Pipfile.lock
+./Pipfile
+./Pipfile.lock
 .vscode/
 /20-29/regex_test.py
