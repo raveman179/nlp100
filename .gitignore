@@ -1,4 +1,4 @@
-/pipfile
-/pipfile.lock
-/.vscode/
-/regex_test.py
+pipfile
+pipfile.lock
+.vscode/
+regex_test.py
