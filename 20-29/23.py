@@ -9,16 +9,29 @@ from pprint import pprint
 
 def wiki_json_extract(keyword):
     '''
-    extract keyword from wikipedia json format
+    Extract the keyword from wikipedia json format
+    
+    args: The keywords you want to use for extraction(str)
+    return: Extracted article by keyword(str)
     '''
     df = pd.read_json('./20-29/jawiki-country.json.gz', lines=True)
     extract_keyword = df[df.title == keyword]['text'].values[0]
     return extract_keyword
 
-article = wiki_json_extract('イギリス')
-# pprint(re.findall(r'''^=(.*?)=$''', article, re.MULTILINE))
-section = re.findall(r'''^=(.*?)=$''', article, re.MULTILINE)
+def count_eq(article):
+    '''
+    'eq' remove from section name
 
-for i in section:
-    eq_count = int(i.count('=') / 2)
-    print(re.sub(r'[=\ ]', '', i) + ', ' + str(eq_count))
+    args:Extracted article by keyword(str)
+    '''
+    section_pat = re.compile(r'''^(=*)(.*?)=*$''')
+    section_list = article.split('\n')
+    for s in section_list:
+        if s.startswith('='):
+            eq = section_pat.sub(r'\1', s)
+            eq_count = eq.count('=')
+            section_name = section_pat.sub(r'\2', s)
+            print("{}, {}".format(section_name, eq_count)) 
+
+article = wiki_json_extract('イギリス')
+print(count_eq(article))
