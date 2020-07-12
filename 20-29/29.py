@@ -3,7 +3,6 @@
 テンプレートの内容を利用し，国旗画像のURLを取得せよ．
 （ヒント: MediaWiki APIのimageinfoを呼び出して，ファイル参照をURLに変換すればよい）
 '''
-
 import pandas as pd
 import re
 from pprint import pprint
@@ -11,34 +10,65 @@ import requests
 
 def wiki_json_extract(keyword):
     '''
-    extract keyword from wikipedia json format
+    Extract the keyword from wikipedia json format
     
-    argus:  keywords to be extract
-    return: Keyword extracted dataframes in json format
+    args: The keywords you want to use for extraction(str)
+    return: Extracted article by keyword(str)
     '''
     df = pd.read_json('./20-29/jawiki-country.json.gz', lines=True)
     extract_keyword = df[df.title == keyword]['text'].values[0]
     return extract_keyword
 
-def removal_markup(templates):
+def basicinfo_perse(article):
+    '''
+    args: Extracted article by keyword(str)
+    return: Basicinfo template(list)
+    '''
+    basicinfo = re.findall(r'''^\{\{基礎情報.*?(.*?)^\}\}$''', article, re.MULTILINE+re.DOTALL)
+    return basicinfo
+
+def template_dict(basicinfo):
+    '''
+    args: Basicinfo template(list)
+    return: A dictionary object that extracts field names and values from a template(dict)
+    '''
+    temps = re.findall(r'''^\|(.+?)\s*=\s*(.+?)(?:(?=\n\|)|(?=\n$))''', basicinfo[0], re.MULTILINE+re.DOTALL)
+    template = {temp[0]:temp[1] for temp in temps}    
+    return template
+
+def highlight_markup_strip(templates):
+    '''
+    args: dict type template(dict)
+    return: striped highlight markup template(dict)
+    '''
+    markup = {}
+
+    for item in templates.items():
+        markup_extract = re.sub(r'\'{2,5}', '', item[1], re.MULTILINE+re.DOTALL)
+        markup[item[0]]=markup_extract
+    
+    return markup
+
+def innerlink_markup_strip(highlights):
+    '''
+    args: dict type template(dict)
+    return: striped innerlink markup template(dict)
+    '''
+    innerlink = {}
+
+    for item in highlights.items():
+        inner_extract = re.sub(r'\[\[(?:[^|]*?\|)??([^|]*?)\]\]', r'\1', item[1],  re.MULTILINE+re.DOTALL)    
+        innerlink[item[0]]=inner_extract
+    
+    return innerlink
+
+def markup_strip_all(innerlink):
     '''
     remove markup 
 
     argus:template to be processed
     return:remove markup tags
     '''
-
-    # 強調マークアップの除去
-    template = {}
-    for t_item in templates.items():
-        template_extract = re.sub(r'\'{2,5}', '', t_item[1], re.MULTILINE+re.DOTALL)
-        template[t_item[0]]=template_extract
-
-    # 内部リンクの除去
-    innerlink = {}
-    for m_item in template.items():
-        inner_extract = re.sub(r'\[\[(?:[^|]*?\|)??([^|]*?)\]\]', r'\1', m_item[1],  re.MULTILINE+re.DOTALL)    
-        innerlink[m_item[0]]=inner_extract
 
     # <br>, <ref>タグ、{{0}}等 ''で置換する
     del_str = re.compile(r'''<.*?>|\{\{.\}\}''')
@@ -83,13 +113,11 @@ def call_imageinfo_api(filename):
     data = R.json()
     print(data['query']['pages']['347935']['imageinfo'][0]['url'])
     
-
 article = wiki_json_extract('イギリス')
+info = basicinfo_perse(article)
+templates = template_dict(info)
+highlights = highlight_markup_strip(templates)
+innerlink = innerlink_markup_strip(highlights)
+extract_templates = markup_strip_all(innerlink)
 
-basicinfo = re.findall(r'''^\{\{基礎情報.*?(.*?)^\}\}$''', article, re.MULTILINE+re.DOTALL)
-temps = re.findall(r'''^\|(.+?)\s*=\s*(.+?)(?:(?=\n\|)|(?=\n$))''', basicinfo[0], re.MULTILINE+re.DOTALL)
-
-templates = {temp[0]:temp[1] for temp in temps}
-
-extract_templates = removal_markup(templates)
 call_imageinfo_api(extract_templates['国旗画像'])
