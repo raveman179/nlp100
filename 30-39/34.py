@@ -1,10 +1,6 @@
 '''
-30. 形態素解析結果の読み込み
-形態素解析結果（neko.txt.mecab）を読み込むプログラムを実装せよ．
-ただし，各形態素は表層形（surface），基本形（base），品詞（pos），
-品詞細分類1（pos1）をキーとするマッピング型に格納し，
-1文を形態素（マッピング型）のリストとして表現せよ．
-第4章の残りの問題では，ここで作ったプログラムを活用せよ．
+34. 名詞の連接
+名詞の連接（連続して出現する名詞）を最長一致で抽出せよ．
 '''
 
 import MeCab
@@ -21,7 +17,24 @@ def text_to_dataframe(filename):
     df_split = pd.concat([df[0], df[1].str.split(',', expand=True)], axis=1).dropna()
     df_split.columns = ['surface', 'pos', 'pos1', 'pos2', 'pos3', 'utilitarian', 'conjugated_form', 'base', 'reading', 'pronunciation']
     #                    表層形     品詞, 品詞分類1,  品詞分類2,  品詞分類3,     活用型,         活用形,        原形,     読み,       発音
-    return df_split
+    dataframe = df_split.reset_index(drop=True)
+    return dataframe
 
-neko_df = text_to_dataframe("./30-39/neko.txt.mecab").query('pos == "動詞"')
-print(neko_df['surface'])
+def conjunction_of_nouns(df):
+    '''
+    args: Morphologically indexed text(pandas dataframe)
+    return: conjunction of nouns(list)
+    '''
+    
+
+    # while posが名詞の時:
+    #   if 次のposも名詞なら:
+    #       surfaceを結合
+    #   else:
+    #       listにappendして次のループに
+    
+    pass
+
+
+
+neko_df = text_to_dataframe("./30-39/neko.txt.mecab")

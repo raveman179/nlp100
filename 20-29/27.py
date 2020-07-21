@@ -67,4 +67,5 @@ info = basicinfo_perse(article)
 templates = template_dict(info)
 highlights = highlight_markup_strip(templates)
 
+# pprint(highlights)
 pprint(innerlink_markup_strip(highlights))

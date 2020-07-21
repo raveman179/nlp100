@@ -38,4 +38,5 @@ def template_dict(basicinfo):
 
 article = wiki_json_extract('イギリス')
 info = basicinfo_perse(article)
+# pprint(info)
 pprint(template_dict(info))

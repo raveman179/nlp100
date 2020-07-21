@@ -8,6 +8,10 @@ import re
 from pprint import pprint
 
 def text_to_dataframe(filename, query):
+    '''
+    args: text want to convert into dataframe(text file)
+    return: Morphologically indexed text(pandas dataframe)
+    '''
     df = pd.read_table(filename, header=None)
     df_split = pd.concat([df[0], df[1].str.split(',', expand=True)], axis=1).dropna()
     df_split.columns = ['surface', 'pos', 'pos1', 'pos2', 'pos3', 'utilitarian', 'conjugated_form', 'base', 'reading', 'pronunciation']
