@@ -5,6 +5,7 @@
 
 import MeCab
 import pandas as pd
+import numpy as np
 import re
 from pprint import pprint
 
@@ -25,16 +26,26 @@ def conjunction_of_nouns(df):
     args: Morphologically indexed text(pandas dataframe)
     return: conjunction of nouns(list)
     '''
+    pos_df = df.loc[:, ['surface', 'pos']]
     
+    con_list = []
+    sentence = ""
+    for index, item in pos_df.iterrows():
+        if item['pos'] == "名詞":
+            sentence += item['surface']
+        elif item['pos'] != "名詞":
+            sentence = ""
+        else:
+            con_list.append(sentence)
 
-    # while posが名詞の時:
     #   if 次のposも名詞なら:
-    #       surfaceを結合
+    #       変数sentence + surface
     #   else:
-    #       listにappendして次のループに
-    
-    pass
+    #       sentenceをlistにappend()して次のループに
+    #   
+    return con_list
 
 
 
 neko_df = text_to_dataframe("./30-39/neko.txt.mecab")
+pprint(conjunction_of_nouns(neko_df))
