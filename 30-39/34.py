@@ -9,6 +9,8 @@ import numpy as np
 import re
 from pprint import pprint
 
+pd.set_option('display.max_rows', 300)
+
 def text_to_dataframe(filename):
     '''
     args: text want to convert into dataframe(text file)
@@ -26,24 +28,43 @@ def conjunction_of_nouns(df):
     args: Morphologically indexed text(pandas dataframe)
     return: conjunction of nouns(list)
     '''
-    pos_df = df.loc[:, ['surface', 'pos']]
+    pos_df = df.loc[:, ['surface', 'pos']].query('pos == "名詞"').reset_index()
+    index_diff = pos_df['index'].diff()
+    index_diff.name = 'diff'
     
-    con_list = []
-    sentence = ""
-    for index, item in pos_df.iterrows():
-        if item['pos'] == "名詞":
-            sentence += item['surface']
-        elif item['pos'] != "名詞":
-            sentence = ""
-        else:
-            con_list.append(sentence)
+    #名詞すべてを含むリスト
+    nouns_list = pd.concat([pos_df, index_diff], axis=1).values.tolist()
 
-    #   if 次のposも名詞なら:
-    #       変数sentence + surface
-    #   else:
-    #       sentenceをlistにappend()して次のループに
-    #   
-    return con_list
+    #結合する名詞の位置リスト
+    connect_nouns = [n for n in nouns_list if n[3] == 1.0]
+
+    connect_list = []
+    for i, words in enumerate(connect_nouns):
+        # nouns_listとconnect_nounsの要素が一致する位置の添字
+        index = nouns_list.index(connect_nouns[i]) 
+        sentence = ""
+
+        #nouns_listの最初の要素が連接の場合
+        if index == 0 and nouns_list[index+1][3] == 1.0:
+            sentence = nouns_list[index][1]
+        
+        #nouns_list[1]~[最後の要素の一つ前]
+        
+
+
+        #名詞3個以上の連節
+        count = 0
+        while nouns_list[index+1][3] == 1.0:
+            sentence = nouns_list[index+count][1]
+            count += 1
+
+        #nouns_list[-1]が連接の場合    
+        if nouns_list[index] == nouns_list[-1] and nouns_list[index][3] == 1.0:
+            sentence = nouns_list[index-1][1] + nouns_list[index][1]
+
+        connect_list.append(sentence)
+
+    return connect_list
 
 
 
