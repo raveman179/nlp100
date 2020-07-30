@@ -39,34 +39,28 @@ def conjunction_of_nouns(df):
     connect_nouns = [n for n in nouns_list if n[3] == 1.0]
 
     connect_list = []
-    for i, words in enumerate(connect_nouns):
+    for i, words in enumerate(connect_nouns, 1):
         # nouns_listとconnect_nounsの要素が一致する位置の添字
-        index = nouns_list.index(connect_nouns[i]) 
+        index = nouns_list.index(words) 
         sentence = ""
-
-        #nouns_listの最初の要素が連接の場合
-        if index == 0 and nouns_list[index+1][3] == 1.0:
-            sentence = nouns_list[index][1]
         
         #nouns_list[1]~[最後の要素の一つ前]
-        
-
-
-        #名詞3個以上の連節
-        count = 0
-        while nouns_list[index+1][3] == 1.0:
-            sentence = nouns_list[index+count][1]
-            count += 1
+        sentence = nouns_list[index-1][1]
 
         #nouns_list[-1]が連接の場合    
-        if nouns_list[index] == nouns_list[-1] and nouns_list[index][3] == 1.0:
+        if i == len(connect_nouns) and nouns_list[index][3] == 1.0:
             sentence = nouns_list[index-1][1] + nouns_list[index][1]
+            connect_list.append(sentence)
+            break
 
+        #連節の処理
+        count = 0
+        while nouns_list[index+count][3] == 1.0:
+            sentence += nouns_list[index+count][1]
+            count += 1
         connect_list.append(sentence)
 
     return connect_list
 
-
-
 neko_df = text_to_dataframe("./30-39/neko.txt.mecab")
-pprint(conjunction_of_nouns(neko_df))
+print(conjunction_of_nouns(neko_df))
