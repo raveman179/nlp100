@@ -35,7 +35,10 @@ def words_frequency_bar(df):
     words = surface.iloc[:10, 0].to_list()
     freq = surface.iloc[:10, 1].to_list()
 
-    plt.bar(words, freq, tick_label = words)
+    words_de = list(reversed(words))
+    freq_de = list(reversed(freq))
+
+    plt.bar(words_de, freq_de, tick_label = words_de)
     plt.show()
 
 
