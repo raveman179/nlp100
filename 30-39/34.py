@@ -5,11 +5,7 @@
 
 import MeCab
 import pandas as pd
-import numpy as np
-import re
 from pprint import pprint
-
-pd.set_option('display.max_rows', 300)
 
 def text_to_dataframe(filename):
     '''
@@ -63,4 +59,4 @@ def conjunction_of_nouns(df):
     return connect_list
 
 neko_df = text_to_dataframe("./30-39/neko.txt.mecab")
-print(conjunction_of_nouns(neko_df))
+pprint(conjunction_of_nouns(neko_df))
