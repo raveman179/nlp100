@@ -1,12 +1,6 @@
-import numpy as np
+import collections
 
 
-a=np.random.randint(0,10, (10,10)).astype(np.int32)
+a = ["吾輩","は","猫","で","ある","。","その後","猫","に","も","だいぶ","逢っ","た","が","こんな","片","端","に","は","一","度","も","出会わ","し","た","事","が","ない","。"]
 
-print(a)
-
-b=a==3
-c=np.where(a==3)
-
-print(b)
-print(c)
+print(collections.Counter(a))
