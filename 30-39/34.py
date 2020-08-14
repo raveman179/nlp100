@@ -3,7 +3,6 @@
 名詞の連接（連続して出現する名詞）を最長一致で抽出せよ．
 '''
 
-import MeCab
 import pandas as pd
 from pprint import pprint
 

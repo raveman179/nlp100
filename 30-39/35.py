@@ -27,5 +27,5 @@ def words_frequency(df):
 
     return surface
 
-neko_df = text_to_dataframe("./30-39/neko.txt.mecab")
+neko_df = text_to_dataframe("./nlp100/30-39/neko.txt.mecab")
 pprint(words_frequency(neko_df))

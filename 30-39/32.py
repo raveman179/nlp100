@@ -3,9 +3,7 @@
 動詞の原形をすべて抽出せよ．
 '''
 
-import MeCab
 import pandas as pd
-import re
 from pprint import pprint
 
 def text_to_dataframe(filename):

@@ -2,9 +2,7 @@
 33. 「AのB」
 2つの名詞が「の」で連結されている名詞句を抽出せよ．
 '''
-import MeCab
 import pandas as pd
-import re
 from pprint import pprint
 
 def text_to_dataframe(filename):
@@ -34,5 +32,5 @@ def B_of_A(df):
     return BofA_list
 
 # の　かつ　pos:助詞、pos1:連体化で前後が名詞のものを抽出
-neko_df = text_to_dataframe("./30-39/neko.txt.mecab")
+neko_df = text_to_dataframe("./nlp100/30-39/neko.txt.mecab")
 print(B_of_A(neko_df))

@@ -2,9 +2,8 @@
 31. 動詞
 動詞の表層形をすべて抽出せよ．
 '''
-import MeCab
+
 import pandas as pd
-import re
 from pprint import pprint
 
 def text_to_dataframe(filename, query):
