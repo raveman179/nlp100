@@ -5,7 +5,6 @@
 係り先文節インデックス番号（dst），係り元文節インデックス番号のリスト（srcs）をメンバ変数に持つこととする．さらに，入力テキストの係り受け解析結果を読み込み，１文をChunkオブジェクトのリストとして表現し，冒頭の説明文の文節の文字列と係り先を表示せよ．
 本章の残りの問題では，ここで作ったプログラムを活用せよ．
 
- 
 * 0 17D 1/1 0.388993
 人工	名詞,一般,*,*,*,*,人工,ジンコウ,ジンコー
 知能	名詞,一般,*,*,*,*,知能,チノウ,チノー
@@ -32,14 +31,10 @@ AI	名詞,一般,*,*,*,*,*
 もし、文字列の一番初めの文字が'*'なら
     \sで区切ってリストにする
     phrase_num = 
-
-
 """
 
-import pandas as pd
 from pprint import pprint
 import re
-import collections
 
 class Morph:
     def __init__(self, line):
@@ -58,84 +53,64 @@ class Chunk:
     def __init__(self, morphs, dst):
         """
         srcs・・・[[1個目の文節の係り元],[2個目の文節の係り元],[3個目の文節の係り元]・・・・・]
-        の形で添え字を渡すとn個目の係り元リストが帰ってくるようにする。
+        の形で添え字を渡すとn個目の係り元リストが帰ってくるようにする・・・？
         """
         self.morphs = morphs
-        self.dst = dst
-        self.srcs = []
-
-    def dst_prams(self, prams):
-        """
-        渡された係り先パラメータをパースする。
-        また、係り先をsrcsに追加する。
-
-        srcsにsrcs[index]が存在するなら:
-            何もしない
-            存在しないなら:
-                srcs.append
-
-        """
-        params_lst = params.split("\s")
-        index = params_lst[0]
-        to_dst = params_lst[1]
-
-        #係り元存在チェック
-
-
-
-
-
-        if self.srcs[to_dst-1:to_dst]:
-            self.srcs[to_dst].append(index)
-        else:
-            lst = []
-            lst.append(index)
-            self.srcs[to_dst].insert(to_dst, lst)
-
-
-        return index, 
-
-
-    def join_surface(self):
-        """
-        morph.surfaceを結合して文節ごとに返す
-        """
-        self.surface = []
-         
-    # def src_to_dst(self, index, dst):
-    #     """
-    #     以下の形でformatで文節を返す
-    #     0 人工知能　＝＞　dst(17) srcs[]
-    #     """
-    #     self.index = index
-    #     print(self.index + " " + join_surface)
-        
+        self.dst = dst  # 係り先インデックス番号
+        self.srcs = []  # 係り元インデックス番号のリスト
+        self.phrase = morphs.surface # 文節
 
 filename = "40-49/ai.ja.txt.parsed"
 with open(filename, mode='r', encoding='utf-8') as f:
     blocks = f.read().split('EOS\n')
-
-explain_list = blocks[2].split('\n')
-phrase_count = [i for i in explain_list if i.startswith('*')]
+    explain_list = blocks[2].split('\n')
 
 # pprint(explain_list)
 
-# for word in explain_list:
-#     if word.startswith('*'):
-#         params = Chunk.dst_prams(word)
+# print(explain_list[0].split()
+    chunks = []
+    morphs = []
+    dst = "17"
+    morphs.append(Chunk(Morph(explain_list[1]), '17'))
 
+    print(morphs)
+
+
+
+    # '*'で始まる要素をカウントして、個数分の空きリストをchunk.srcsに追加
+    # 係り元を入れるリストを作る。
+    # chunk.srcs = [[] for l in explain_list if l.startswith('*')]
+    # pram = []
+
+    # explain_listの中身を読み取る
+    # for word in explain_list:
+        
+    #     # wordが係り受け分析結果の場合
+    #     if word.startswith('*'):
+    #         pram = word.split()
+    #         chunk.dst = pram[2][:-1]
+    #         chunk.srcs[int(chunk.dst)].append(index)
+
+
+
+        
+        # # surfaceに値が代入されている場合
+        # elif surface != '':
+        #     sentence = chunk.surface
+        #     sentence.append(surface)
+
+        #     #かかり先が存在する場合のコードを考える        
+
+        # # wordが形態素分析結果の場合
+        # else:
+        #     morph = Morph(word)
+        #     surface += morph.surface
+
+
+    # リストをフォーマットして出力する
     
     
-    
-    
-    # else:    
-    #     attr = re.split('\t|,', word)
-    #     morph.surface = attr[0] 
-    #     morph.base = attr[7]
-    #     morph.pos = attr[1]
-    #     morph.pos1 = attr[2]
-    #     line = morph.worddict()
-    #     morph.morph_list.append(line)
+
 
 
 
