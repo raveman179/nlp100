@@ -50,7 +50,7 @@ class Morph:
         self.pos1 = attr[1]
 
 class Chunk:
-    def __init__(self, morphs, dst):
+    def __init__(self, morphs, dst, phrase):
         """
         srcs・・・[[1個目の文節の係り元],[2個目の文節の係り元],[3個目の文節の係り元]・・・・・]
         の形で添え字を渡すとn個目の係り元リストが帰ってくるようにする・・・？
@@ -58,55 +58,36 @@ class Chunk:
         self.morphs = morphs
         self.dst = dst  # 係り先インデックス番号
         self.srcs = []  # 係り元インデックス番号のリスト
-        self.phrase = morphs.surface # 文節
+        self.phrase = "".join([morph.surface for morph in morphs]) # 文節
 
 filename = "40-49/ai.ja.txt.parsed"
 with open(filename, mode='r', encoding='utf-8') as f:
     blocks = f.read().split('EOS\n')
     explain_list = blocks[2].split('\n')
 
-# pprint(explain_list)
+    chunks = [] # 文のリスト
 
-# print(explain_list[0].split()
-    chunks = []
     morphs = []
-    dst = "17"
-    morphs.append(Chunk(Morph(explain_list[1]), '17'))
+    dst = ""
+    pram = []
 
-    print(morphs)
+   # explain_listの中身を読み取る
+    for i, word in enumerate(explain_list):
 
-
-
-    # '*'で始まる要素をカウントして、個数分の空きリストをchunk.srcsに追加
-    # 係り元を入れるリストを作る。
-    # chunk.srcs = [[] for l in explain_list if l.startswith('*')]
-    # pram = []
-
-    # explain_listの中身を読み取る
-    # for word in explain_list:
-        
-    #     # wordが係り受け分析結果の場合
-    #     if word.startswith('*'):
-    #         pram = word.split()
-    #         chunk.dst = pram[2][:-1]
-    #         chunk.srcs[int(chunk.dst)].append(index)
+        # wordが係り受け分析結果の場合
+        if word.startswith('*'):
+            pram = word.split()
+            dst = int(pram[2][:-1])
+     
+        # wordが形態素分析結果の場合
+        else:
+            morphs.append(Morph(word))
+            
+        chunks.append(Chunk(morphs, dst))
+        morphs = []
 
 
-
-        
-        # # surfaceに値が代入されている場合
-        # elif surface != '':
-        #     sentence = chunk.surface
-        #     sentence.append(surface)
-
-        #     #かかり先が存在する場合のコードを考える        
-
-        # # wordが形態素分析結果の場合
-        # else:
-        #     morph = Morph(word)
-        #     surface += morph.surface
-
-
+    print(chunks)
     # リストをフォーマットして出力する
     
     
