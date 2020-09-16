@@ -28,9 +28,6 @@ AI	名詞,一般,*,*,*,*,*
 2 AI ＝＞　dst(3) srcs[]
 3 〈エーアイ〉)とは、　＝＞　dst(17) srcs[2]
 
-もし、文字列の一番初めの文字が'*'なら
-    \sで区切ってリストにする
-    phrase_num = 
 """
 
 from pprint import pprint
@@ -50,7 +47,7 @@ class Morph:
         self.pos1 = attr[1]
 
 class Chunk:
-    def __init__(self, morphs, dst, phrase):
+    def __init__(self, morphs, dst):
         """
         srcs・・・[[1個目の文節の係り元],[2個目の文節の係り元],[3個目の文節の係り元]・・・・・]
         の形で添え字を渡すとn個目の係り元リストが帰ってくるようにする・・・？
@@ -65,7 +62,7 @@ with open(filename, mode='r', encoding='utf-8') as f:
     blocks = f.read().split('EOS\n')
     explain_list = blocks[2].split('\n')
 
-    chunks = [] # 文のリスト
+    chunks = [] # Chunkオブジェクトのリスト
 
     morphs = []
     dst = ""
@@ -78,17 +75,28 @@ with open(filename, mode='r', encoding='utf-8') as f:
         if word.startswith('*'):
             pram = word.split()
             dst = int(pram[2][:-1])
-     
+            #⇑1要素づつずれてるのでなおす
+
         # wordが形態素分析結果の場合
-        else:
+        elif len(word) != 0:
             morphs.append(Morph(word))
-            
-        chunks.append(Chunk(morphs, dst))
-        morphs = []
+            continue
 
+        # 文節の最後でchunksにChunkオブジェクトを追加する   
+        if len(morphs) > 0:
+            chunks.append(Chunk(morphs, dst))
+            morphs = []
 
+    #chunksリストを検索して、chunks.dstの中身から係り元リストsrcsを作る
+    for index, sentence in enumerate(chunks):
+        to_dst = sentence.dst
+        chunks[to_dst].srcs.append(index)
+        
+        
     print(chunks)
-    # リストをフォーマットして出力する
+
+# 2 AI ＝＞　dst(3) srcs[]
+# 3 〈エーアイ〉)とは、　＝＞　dst(17) srcs[2]
     
     
 
