@@ -57,6 +57,12 @@ class Chunk:
         self.srcs = []  # 係り元インデックス番号のリスト
         self.phrase = "".join([morph.surface for morph in morphs]) # 文節
 
+def show_dependency(chunks):
+    for i, chunk in enumerate(chunks):
+        line = "{}  {}\t＝＞ dst[{}] srcs{}".format(i, chunk.phrase, chunk.dst, chunk.srcs)
+        print(line)
+
+
 filename = "40-49/ai.ja.txt.parsed"
 with open(filename, mode='r', encoding='utf-8') as f:
     blocks = f.read().split('EOS\n')
@@ -72,28 +78,26 @@ with open(filename, mode='r', encoding='utf-8') as f:
     for i, word in enumerate(explain_list):
 
         # wordが係り受け分析結果の場合
-        if word.startswith('*'):
+        if word.startswith('*') or len(word) == 0:
+            # 文節の最後でchunksにChunkオブジェクトを追加する   
+            if len(morphs) > 0:
+                chunks.append(Chunk(morphs, dst))
+                morphs = []
+                if dst == -1:
+                    break
             pram = word.split()
             dst = int(pram[2][:-1])
-            #⇑1要素づつずれてるのでなおす
 
         # wordが形態素分析結果の場合
         elif len(word) != 0:
             morphs.append(Morph(word))
-            continue
-
-        # 文節の最後でchunksにChunkオブジェクトを追加する   
-        if len(morphs) > 0:
-            chunks.append(Chunk(morphs, dst))
-            morphs = []
 
     #chunksリストを検索して、chunks.dstの中身から係り元リストsrcsを作る
     for index, sentence in enumerate(chunks):
         to_dst = sentence.dst
         chunks[to_dst].srcs.append(index)
         
-        
-    print(chunks)
+    show_dependency(chunks)    
 
 # 2 AI ＝＞　dst(3) srcs[]
 # 3 〈エーアイ〉)とは、　＝＞　dst(17) srcs[2]
