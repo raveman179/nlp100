@@ -1,36 +1,11 @@
 """
-41. 係り受け解析結果の読み込み（文節・係り受け）Permalink
-40に加えて，文節を表すクラスChunkを実装せよ．
-このクラスは形態素（Morphオブジェクト）のリスト（morphs），
-係り先文節インデックス番号（dst），係り元文節インデックス番号のリスト（srcs）をメンバ変数に持つこととする．さらに，入力テキストの係り受け解析結果を読み込み，１文をChunkオブジェクトのリストとして表現し，冒頭の説明文の文節の文字列と係り先を表示せよ．
-本章の残りの問題では，ここで作ったプログラムを活用せよ．
-
-* 0 17D 1/1 0.388993
-人工	名詞,一般,*,*,*,*,人工,ジンコウ,ジンコー
-知能	名詞,一般,*,*,*,*,知能,チノウ,チノー
-
-出力例
-0 人工知能　＝＞　dst(17) srcs[]
-
-* 2 3D 0/0 0.758984
-AI	名詞,一般,*,*,*,*,*
-* 3 17D 1/5 0.517898
-〈	記号,括弧開,*,*,*,*,〈,〈,〈
-エーアイ	名詞,固有名詞,一般,*,*,*,*
-〉	記号,括弧閉,*,*,*,*,〉,〉,〉
-）	記号,括弧閉,*,*,*,*,）,）,）
-と	助詞,格助詞,引用,*,*,*,と,ト,ト
-は	助詞,係助詞,*,*,*,*,は,ハ,ワ
-、	記号,読点,*,*,*,*,、,、,、
-
-出力例
-
-2 AI ＝＞　dst(3) srcs[]
-3 〈エーアイ〉)とは、　＝＞　dst(17) srcs[2]
-
+42. 係り元と係り先の文節の表示
+係り元の文節と係り先の文節のテキストをタブ区切り形式ですべて抽出せよ．
+ただし，句読点などの記号は出力しないようにせよ．
 """
 
 from pprint import pprint
+import re
 
 class Morph:
     def __init__(self, line):
@@ -61,6 +36,15 @@ def show_dependency(chunks):
         line = "{}  {}\t＝＞ dst[{}] srcs{}".format(i, chunk.phrase, chunk.dst, chunk.srcs)
         print(line)
 
+def src_to_dst(chunks):
+    symbols = r"[()（）、。「」『』〈〉]"
+    symbol_pat = re.compile(symbols)
+
+    for i, chunk in enumerate(chunks):
+        src_phrase = symbol_pat.sub("", chunk.phrase)
+        dst_phrase = symbol_pat.sub("", chunks[chunks[i].dst].phrase)
+        
+        print("{}\t{}".format(src_phrase, dst_phrase))
 
 filename = "40-49/ai.ja.txt.parsed"
 with open(filename, mode='r', encoding='utf-8') as f:
@@ -95,14 +79,5 @@ with open(filename, mode='r', encoding='utf-8') as f:
     for index, sentence in enumerate(chunks):
         to_dst = sentence.dst
         chunks[to_dst].srcs.append(index)
-        
-    show_dependency(chunks)    
 
-# 2 AI ＝＞　dst(3) srcs[]
-# 3 〈エーアイ〉)とは、　＝＞　dst(17) srcs[2]
-    
-    
-
-
-
-
+    src_to_dst(chunks)
