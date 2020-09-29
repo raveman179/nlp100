@@ -1,9 +1,8 @@
 """
-42. 係り元と係り先の文節の表示
-係り元の文節と係り先の文節のテキストをタブ区切り形式ですべて抽出せよ．
+43. 名詞を含む文節が動詞を含む文節に係るものを抽出
+名詞を含む文節が，動詞を含む文節に係るとき，これらをタブ区切り形式で抽出せよ．
 ただし，句読点などの記号は出力しないようにせよ．
 """
-
 from pprint import pprint
 import re
 
@@ -37,6 +36,9 @@ def show_dependency(chunks):
         print(line)
 
 def src_to_dst(src, dst):
+    """
+    正規表現で文字列に含まれる記号を取り除いて出力する
+    """
     symbols = r"[()（）、。「」『』〈〉]"
     symbol_pat = re.compile(symbols)
 
@@ -44,6 +46,29 @@ def src_to_dst(src, dst):
     dst_phrase = symbol_pat.sub("", dst)
     
     print("{}\t{}".format(src_phrase, dst_phrase))
+
+def noun_to_verb(chunks):
+    """
+    名詞　=> 動詞の係受けをする文節を取り出して、
+    src_to_dstに投げて出力する
+    """
+  
+    for chunk in chunks:
+        target_dst = ""
+        morph = chunk.morphs
+
+        for m in morph:
+            if m.pos == '名詞':
+                target_dst = chunks[chunk.dst].morphs
+                break
+
+        for d in target_dst:
+            if d.pos == '動詞':
+                src = chunk.phrase
+                dst = chunks[chunk.dst].phrase
+                src_to_dst(src, dst) 
+                break
+
 
 filename = "40-49/ai.ja.txt.parsed"
 with open(filename, mode='r', encoding='utf-8') as f:
@@ -79,7 +104,4 @@ with open(filename, mode='r', encoding='utf-8') as f:
         to_dst = sentence.dst
         chunks[to_dst].srcs.append(index)
 
-    for index ,chunk in enumerate(chunks):
-        src = chunk.phrase
-        dst = chunks[chunks[index].dst].phrase
-        src_to_dst(src, dst)
+    noun_to_verb(chunks)
