@@ -11,7 +11,7 @@ numpy = "*"
 requests = "*"
 mecab-python3 = "*"
 matplotlib = "*"
-tkinter = "*"
+graphviz = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.6.9"

@@ -1,11 +1,15 @@
 """
-42. 係り元と係り先の文節の表示
-係り元の文節と係り先の文節のテキストをタブ区切り形式ですべて抽出せよ．
-ただし，句読点などの記号は出力しないようにせよ．
+44. 係り受け木の可視化
+与えられた文の係り受け木を有向グラフとして可視化せよ．
+可視化には，Graphviz等を用いるとよい
 """
 
 from pprint import pprint
 import re
+from graphviz import Digraph
+
+G = Digraph(format='png')
+G.attr('node', shape='circle', fontname='TakaoPGothic')
 
 class Morph:
     def __init__(self, line):
@@ -44,6 +48,43 @@ def del_symbol(sen):
     
     return phrase
 
+def noun_to_verb(chunks):
+    """
+    名詞　=> 動詞の係受けをする文節を取り出して、
+    src_to_dstに投げて出力する
+    """
+  
+    for chunk in chunks:
+        target_dst = ""
+        morph = chunk.morphs
+
+        for m in morph:
+            if m.pos == '名詞':
+                target_dst = chunks[chunk.dst].morphs
+                break
+
+        for d in target_dst:
+            if d.pos == '動詞':
+                src = chunk.phrase
+                dst = chunks[chunk.dst].phrase
+                sentence = [src, dst]
+                phrase = list(map(del_symbol, sentence))
+                print("{}\t{}".format(phrase[0], phrase[1]))
+                break
+
+def show_graph(chunks):
+
+    #節を作成
+    for chunk in chunks:
+        G.node(chunk.phrase)
+    
+    #辺を作成
+    for index, chunk in enumerate(chunks):
+        G.edge(chunk.phrase, chunks[chunk.dst].phrase)
+
+    G.render('./44_result')
+
+
 filename = "40-49/ai.ja.txt.parsed"
 with open(filename, mode='r', encoding='utf-8') as f:
     blocks = f.read().split('EOS\n')
@@ -78,9 +119,8 @@ with open(filename, mode='r', encoding='utf-8') as f:
         to_dst = sentence.dst
         chunks[to_dst].srcs.append(index)
 
-    for index ,chunk in enumerate(chunks):
-        src = chunk.phrase
-        dst = chunks[chunks[index].dst].phrase
-        sentence = [src, dst]
-        phrase = list(map(del_symbol, sentence))
-        print("{}\t{}".format(phrase[0], phrase[1]))
+    #phraseから記号を削除して、有向グラフを作成する
+    for chunk in chunks:
+        chunk.phrase = del_symbol(chunk.phrase)
+         
+    show_graph(chunks)

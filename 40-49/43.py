@@ -35,17 +35,13 @@ def show_dependency(chunks):
         line = "{}  {}\t＝＞ dst[{}] srcs{}".format(i, chunk.phrase, chunk.dst, chunk.srcs)
         print(line)
 
-def src_to_dst(src, dst):
-    """
-    正規表現で文字列に含まれる記号を取り除いて出力する
-    """
+def del_symbol(sen):
     symbols = r"[()（）、。「」『』〈〉]"
     symbol_pat = re.compile(symbols)
 
-    src_phrase = symbol_pat.sub("", src)
-    dst_phrase = symbol_pat.sub("", dst)
+    phrase = symbol_pat.sub("", sen)
     
-    print("{}\t{}".format(src_phrase, dst_phrase))
+    return phrase
 
 def noun_to_verb(chunks):
     """
@@ -66,7 +62,9 @@ def noun_to_verb(chunks):
             if d.pos == '動詞':
                 src = chunk.phrase
                 dst = chunks[chunk.dst].phrase
-                src_to_dst(src, dst) 
+                sentence = [src, dst]
+                phrase = list(map(del_symbol, sentence))
+                print("{}\t{}".format(phrase[0], phrase[1]))
                 break
 
 
