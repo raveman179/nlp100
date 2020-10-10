@@ -7,6 +7,7 @@
 from pprint import pprint
 import re
 from graphviz import Digraph
+from collections import OrderedDict
 
 G = Digraph(format='png')
 G.attr('node', shape='circle', fontname='TakaoPGothic')
@@ -73,14 +74,31 @@ def noun_to_verb(chunks):
                 break
 
 def show_graph(chunks):
+    # {人工知能:[17], じんこうちのう:[17]}
 
-    #節を作成
+    chunkdict = OrderedDict()
     for chunk in chunks:
-        G.node(chunk.phrase)
+        chunkdict[chunk.phrase]=chunk.dst
+
+    listed_chunkdict = list(chunkdict.items())
+
+    # 節を作成
+    # for k, v in chunkdict.items():
+    #     # edge_sentence = chunk.phrase + " (" + str(index) + ")" 
+    #     G.node(k + "(" + str(v) + ")")
     
     #辺を作成
-    for index, chunk in enumerate(chunks):
-        G.edge(chunk.phrase, chunks[chunk.dst].phrase)
+    # for index, chunk in enumerate(chunks):
+        # G.edge(chunk.phrase, chunks[chunk.dst].phrase)
+
+    for chunkdict in listed_chunkdict:
+        src_phrase = chunkdict[0] + "(" + str(chunkdict[1]) + ")"
+        dst_phrase = str(listed_chunkdict[chunkdict[1]-1][0]) + "(" + str(listed_chunkdict[chunkdict[1]-1][1]) + ")"
+        G.edge(src_phrase, dst_phrase)
+
+
+    # 同じ単語が区別されないのでインデックスを追加する
+    # 最後の文節が2回追加されているので文節追加処理部分を修正
 
     G.render('./44_result')
 
