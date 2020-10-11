@@ -7,7 +7,6 @@
 from pprint import pprint
 import re
 from graphviz import Digraph
-from collections import OrderedDict
 
 G = Digraph(format='png')
 G.attr('node', shape='circle', fontname='TakaoPGothic')
@@ -84,6 +83,7 @@ def show_graph(chunks):
         if chunks[i].dst == -1:
             break       
         G.edge(src_phrase, dst_phrase)
+
     G.render('./44_result')
 
 
@@ -121,7 +121,7 @@ with open(filename, mode='r', encoding='utf-8') as f:
         to_dst = sentence.dst
         chunks[to_dst].srcs.append(index)
 
-    #phraseから記号を削除して、有向グラフを作成する
+    #phraseから記号を削除する
     for chunk in chunks:
         chunk.phrase = del_symbol(chunk.phrase)
          
